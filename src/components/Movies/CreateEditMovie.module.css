@@ -1,0 +1,10 @@
+.errorMessage {
+    color: #eb5757ed;
+    font-weight: 400;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.inputError {
+    border: 1px solid #eb5757ed;
+}
