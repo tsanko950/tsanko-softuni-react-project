@@ -16,7 +16,9 @@ export const AuthProvider = ({ children }) => {
       values.email,
       values.password
     );
+    console.log(result);
     setAuth(result);
+    localStorage.setItem("auth", JSON.stringify(result));
     localStorage.setItem("accessToken", result.accessToken);
     navigate(Path.Home);
   };
@@ -36,16 +38,18 @@ export const AuthProvider = ({ children }) => {
   const logoutHandler = () => {
     setAuth({});
     localStorage.removeItem("accessToken");
+    localStorage.removeItem("auth");
   };
-
+  // console.log(auth.stsTokenManager.accessToken);
   const values = {
     loginSubmitHandler,
     registerSubmitHandler,
     logoutHandler,
     username: auth.username || auth.email,
     email: auth.email,
-    userId: auth.id,
+    userId: auth.uid,
     isAuthenticated: !!auth.accessToken,
+    isAdmin: !!auth.isAdmin,
   };
 
   return <AuthContext.Provider value={values}>{children}</AuthContext.Provider>;

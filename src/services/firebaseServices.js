@@ -1,6 +1,7 @@
 import { initializeApp } from 'firebase/app';
-import { collection, getFirestore, doc, getDoc, getDocs, addDoc } from "firebase/firestore";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { collection, getFirestore, where, query, doc, setDoc, getDoc, getDocs, addDoc } from "firebase/firestore";
+import { getAuth, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { getFunctions } from "firebase/functions";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_APIKEY,
@@ -11,11 +12,12 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_APPID
 };
 
-console.log(firebaseConfig)
+
 
   const app = initializeApp(firebaseConfig);
   export const db = getFirestore(app);
-  
+  const functions = getFunctions(app);
+
   export const addMovie = async (movieData) => {
     try {
       const docRef = await addDoc(collection(db, 'movies'), movieData);
@@ -101,18 +103,30 @@ console.log(firebaseConfig)
       const auth = getAuth();
       
       // Crear el usuario con email y contraseña
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(auth, email.trim(), password);
   
       // Obtener el ID del usuario registrado
       const userId = userCredential.user.uid;
   
       // Guardar información adicional en Firestore
-      const usersCollection = collection(db, 'users');
-      const result = await addDoc(usersCollection, { userId, email, username, isAdmin: false });
+      //const usersCollection = collection(db, 'users');
+      //const result = await addDoc(usersCollection, { userId, email, username, isAdmin: false });
+      const result = await setDoc(doc(db, "users", userId), {
+        email: email.trim(),
+        isAdmin: false,
+        userId: userId,
+        username: username
+      });
+
+      
+      
       var objResult = {};
       objResult.accessToken = userCredential._tokenResponse.idToken;
-      objResult.email = email;
+      objResult.email = email.trim();
       objResult.username = username;
+      objResult.isAdmin = false;
+      objResult.uid = userId;
+      console.log(objResult);
       return objResult;
     } catch (error) {
       console.error('Error al registrar usuario:', error.message);
@@ -121,10 +135,65 @@ console.log(firebaseConfig)
   
   export const loginUser = async (email, password) => {
     try {
-      const userCredential = await signInWithEmailAndPassword(email, password); // auth, 
-      const user = userCredential.user;
-      return user;
+      const auth = getAuth();
+  
+      // Iniciar sesión con email y contraseña
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      var objResult = {};
+      objResult.accessToken = userCredential.user.accessToken;
+      objResult.email = userCredential.user.email;
+      
+      const userInfo = await getUserByID(userCredential.user.uid)
+      
+      objResult.username = userInfo.username;
+      objResult.isAdmin = userInfo.isAdmin;
+      objResult.uid = userCredential.user.uid;
+      
+      console.log(objResult);
+      return objResult;
     } catch (error) {
+      console.error('Error:', error.message);
+      throw error;
+    }
+  };
+
+  export const logoutUser = async () => {
+    try {
+      const auth = getAuth();
+  
+      await signOut(auth);
+  
+      // Limpiar el localStorage u otras tareas necesarias
+      localStorage.removeItem("auth");
+      localStorage.removeItem("accesToken");
+    } catch (error) {
+      console.error('Error:', error.message);
+      throw error;
+    }
+  };
+
+  export const getUserByID = async (userIdToSearch) => {
+
+/*
+    const usersCollection = collection(db, 'users');
+    console.log(usersCollection)
+    const query = usersCollection.Where('userId', '==', userIdToSearch);
+  */
+    try {
+      //const q = query(collection(db, "users"), where("userId", "==", userIdToSearch));
+      //const querySnapshot = await getDoc(q);
+
+      const docUserRef = doc(db, "users", userIdToSearch);
+      const docUser = await getDoc(docUserRef);
+
+      if (docUser.exists()) {
+        return docUser.data();
+      } else {
+        return null;
+      }
+
+    } catch (error) {
+      console.error('Error:', error.message);
       throw error;
     }
   };

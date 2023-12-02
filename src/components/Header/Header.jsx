@@ -203,7 +203,7 @@ export default function Header() {
                           <Link to="profile.html">Profile</Link>
                         </li>
                         <li>
-                          <Link to="contacts.html">Contacts</Link>
+                          <Link to={Path.Logout}>Logout</Link>
                         </li>
                         <li>
                           <Link to="interview.html">Interview</Link>
@@ -225,9 +225,7 @@ export default function Header() {
                         <li>
                           <Link to="forgot.html">Forgot password</Link>
                         </li>
-                        <li>
-                          <Link to="404.html">404 Page</Link>
-                        </li>
+                        <li></li>
                       </div>
                       <div
                         className="scrollbar-track scrollbar-track-x show"

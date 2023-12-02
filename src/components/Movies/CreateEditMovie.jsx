@@ -1,6 +1,9 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import * as firebaseServices from "../../services/firebaseServices";
 import styles from "./CreateEditMovie.module.css";
+import { useNavigate } from "react-router-dom";
+import Path from "../../paths";
+import AuthContext from "../../contexts/autoContext";
 
 const movieInitialState = {
   cast: "",
@@ -16,9 +19,14 @@ const movieInitialState = {
 
 const CreateEditMovie = ({ onEdit, movieId }) => {
   const [movieValues, setMovieValues] = useState(movieInitialState);
+  const { isAuthenticated, userId } = useContext(AuthContext);
   const [errors, setErrors] = useState({});
 
+  const navigate = useNavigate();
   useEffect(() => {
+    if (!isAuthenticated) {
+      navigate(Path.Home);
+    }
     //firebaseServices.getMovieByID(movieId).then((result) => setMovie(result));
   }, [movieId]);
 
@@ -51,9 +59,10 @@ const CreateEditMovie = ({ onEdit, movieId }) => {
     e.preventDefault();
 
     try {
+      movieValues.creator = userId;
       console.log(movieValues);
       const result = firebaseServices.addMovie(movieValues);
-      navigate("/games");
+      navigate(Path.MoviesList);
     } catch (err) {
       // Error notification
       console.log(err);

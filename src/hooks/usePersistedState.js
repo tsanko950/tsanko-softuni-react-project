@@ -3,7 +3,7 @@ import { useState } from 'react';
 export default function usePersistedState(key, defaultValue) {
     const [state, setState] = useState(() => {
         const persistedState = localStorage.getItem(key);
-        
+        console.log(persistedState);
         try {
             if (persistedState) {
                 return JSON.parse(persistedState);
@@ -14,7 +14,7 @@ export default function usePersistedState(key, defaultValue) {
     });
 
     const setPersistedState = (value) => {
-        console.log(value)
+        
         setState(value);
 
         let serializedValue;
@@ -23,7 +23,7 @@ export default function usePersistedState(key, defaultValue) {
         } else {
             serializedValue = JSON.stringify(value);
         }
-
+ 
         localStorage.setItem(key, serializedValue);
     };
 

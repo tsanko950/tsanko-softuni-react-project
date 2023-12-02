@@ -11,6 +11,7 @@ import Path from "./paths";
 import Login from "./components/Authentication/Login";
 import Register from "./components/Authentication/Register";
 import { AuthProvider } from "./contexts/autoContext";
+import Logout from "./components/Authentication/Logout";
 function App() {
   const [count, setCount] = useState(0);
   //serviceFirebase.actualizarPelicula(2, 2);
@@ -26,12 +27,12 @@ function App() {
           <Route path={Path.MovieDetails} element={<MovieDetails />}></Route>
           <Route path={Path.Login} element={<Login />}></Route>
           <Route path={Path.Register} element={<Register />}></Route>
+          <Route path={Path.Logout} element={<Logout />}></Route>
           <Route
             path={Path.CreateEditMovie}
             element={<CreateEditMovie />}
           ></Route>
         </Routes>
-        <footer>{import.meta.env.VITE_APIKEY}All rights reseved &copy;</footer>
         <Footer />
       </AuthProvider>
     </>
