@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { collection, getFirestore, where, query, doc, setDoc, getDoc, getDocs, addDoc } from "firebase/firestore";
+import { collection, getFirestore, updateDoc, doc, setDoc, getDoc, getDocs, addDoc } from "firebase/firestore";
 import { getAuth, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { getFunctions } from "firebase/functions";
 
@@ -64,7 +64,7 @@ const firebaseConfig = {
   
   export const updateMovie = async (id, nuevaInformacion) => {
     try {
-      await db.collection('movies').doc(id).update(nuevaInformacion);
+      await updateDoc(doc(db, "movies", id), nuevaInformacion);
       console.log('Película actualizada con éxito');
     } catch (error) {
       console.error('Error updating movie:', error);

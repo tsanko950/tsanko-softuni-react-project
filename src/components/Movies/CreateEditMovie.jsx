@@ -1,11 +1,11 @@
 import { useContext, useEffect, useState } from "react";
 import * as firebaseServices from "../../services/firebaseServices";
 import styles from "./CreateEditMovie.module.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Path from "../../paths";
 import AuthContext from "../../contexts/autoContext";
 
-const movieInitialState = {
+let movieInitialState = {
   cast: "",
   director: "",
   duration: 0,
@@ -17,12 +17,15 @@ const movieInitialState = {
   year: 0,
 };
 
-const CreateEditMovie = ({ onEdit, movieId }) => {
+const CreateEditMovie = ({ onEdit }) => {
   const [movieValues, setMovieValues] = useState(movieInitialState);
   const { isAuthenticated, userId } = useContext(AuthContext);
   const [errors, setErrors] = useState({});
-
+  const { movieId } = useParams();
   const navigate = useNavigate();
+
+  let isUpdate = false;
+
   useEffect(() => {
     if (!isAuthenticated) {
       navigate(Path.Home);
@@ -30,6 +33,25 @@ const CreateEditMovie = ({ onEdit, movieId }) => {
     //firebaseServices.getMovieByID(movieId).then((result) => setMovie(result));
   }, [movieId]);
 
+  if (typeof movieId != "undefined") {
+    isUpdate = true;
+    useEffect(() => {
+      firebaseServices
+        .getMovieById(movieId)
+        .then((movieData) => {
+          if (movieData) {
+            console.log(movieData);
+            setMovieValues(movieData);
+          } else {
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }, [movieId]);
+  }
+
+  console.log(movieId);
   const changeHandler = (e) => {
     let value = "";
 
@@ -60,8 +82,12 @@ const CreateEditMovie = ({ onEdit, movieId }) => {
 
     try {
       movieValues.creator = userId;
-      console.log(movieValues);
-      const result = firebaseServices.addMovie(movieValues);
+      if (isUpdate) {
+        const result = firebaseServices.updateMovie(movieId, movieValues);
+      } else {
+        const result = firebaseServices.addMovie(movieValues);
+      }
+
       navigate(Path.MoviesList);
     } catch (err) {
       // Error notification

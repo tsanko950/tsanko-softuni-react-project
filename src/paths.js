@@ -6,7 +6,7 @@ const Path = {
     Register: '/register',
     MoviesList: '/movies',
     MovieDetails: '/movies/:movieId',
-    CreateEditMovie: '/add-movie',
+    CreateEditMovie: '/add-movie/:movieId?',
 };
 
 export default Path;

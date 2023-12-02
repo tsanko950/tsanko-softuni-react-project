@@ -1,12 +1,15 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import * as firebaseServices from "../../services/firebaseServices";
 import { convertYouTubeEmbedLink, getDuration } from "../../utils/utils";
+import styles from "./CreateEditMovie.module.css";
+import Path from "../../paths";
+import AuthContext from "../../contexts/autoContext";
 
 export default function MovieDetails() {
   const [movie, setMovie] = useState({});
   const [genres, setGenres] = useState([]);
-
+  const { isAuthenticated, userId } = useContext(AuthContext);
   const { movieId } = useParams();
 
   useEffect(() => {
@@ -25,6 +28,7 @@ export default function MovieDetails() {
       .getMovieById(movieId)
       .then((movieData) => {
         if (movieData) {
+          console.log(movieData);
           setMovie(movieData);
         } else {
           console.log("No se encontró la película con el ID proporcionado.");
@@ -125,6 +129,42 @@ export default function MovieDetails() {
                     </svg>{" "}
                     Add to favorites
                   </button>
+                  {isAuthenticated && userId == movie.creator && (
+                    <div style={{ display: "flex" }}>
+                      <Link
+                        className="movie__edit"
+                        to={`${Path.CreateEditMovie.replace(
+                          ":movieId",
+                          movieId
+                        )}`}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 18 18"
+                        >
+                          <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
+                        </svg>{" "}
+                        Edit
+                      </Link>
+                      <button
+                        className="movie__edit btn-movie-delete"
+                        type="button"
+                        style={{ marginLeft: "15px" }}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 18 18"
+                        >
+                          <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />{" "}
+                          <path
+                            fillRule="evenodd"
+                            d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"
+                          />
+                        </svg>{" "}
+                        Delete
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
               {/* end video player */}
@@ -1869,58 +1909,60 @@ export default function MovieDetails() {
                     </ul>
                   </div>
                 </div>
-                <button
-                  className="section__nav section__nav--cards section__nav--prev"
-                  data-nav="#similar"
-                  type="button"
-                >
-                  <svg
-                    width={17}
-                    height={15}
-                    viewBox="0 0 17 15"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
+                <div>
+                  <button
+                    className="section__nav section__nav--cards section__nav--prev"
+                    data-nav="#similar"
+                    type="button"
                   >
-                    <path
-                      d="M1.25 7.72559L16.25 7.72559"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M7.2998 1.70124L1.2498 7.72524L7.2998 13.7502"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </button>
-                <button
-                  className="section__nav section__nav--cards section__nav--next"
-                  data-nav="#similar"
-                  type="button"
-                >
-                  <svg
-                    width={17}
-                    height={15}
-                    viewBox="0 0 17 15"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
+                    <svg
+                      width={17}
+                      height={15}
+                      viewBox="0 0 17 15"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M1.25 7.72559L16.25 7.72559"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M7.2998 1.70124L1.2498 7.72524L7.2998 13.7502"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </button>
+                  <button
+                    className="section__nav section__nav--cards section__nav--next"
+                    data-nav="#similar"
+                    type="button"
                   >
-                    <path
-                      d="M15.75 7.72559L0.75 7.72559"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M9.7002 1.70124L15.7502 7.72524L9.7002 13.7502"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </button>
+                    <svg
+                      width={17}
+                      height={15}
+                      viewBox="0 0 17 15"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M15.75 7.72559L0.75 7.72559"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M9.7002 1.70124L15.7502 7.72524L9.7002 13.7502"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
