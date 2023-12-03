@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { collection, getFirestore, updateDoc, doc, setDoc, getDoc, getDocs, addDoc } from "firebase/firestore";
+import { collection, getFirestore, Timestamp, updateDoc, doc, setDoc, getDoc, where, query, getDocs, addDoc } from "firebase/firestore";
 import { getAuth, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { getFunctions } from "firebase/functions";
 
@@ -11,7 +11,6 @@ const firebaseConfig = {
   messagingSenderId: import.meta.env.VITE_MESSAGINGSENDERID,
   appId: import.meta.env.VITE_APPID
 };
-
 
 
   const app = initializeApp(firebaseConfig);
@@ -28,7 +27,7 @@ const firebaseConfig = {
     }
   };
   
-  
+  /* MOVIES */
   export const getAllMovies = async () => {
     try {
       const querySnapshot = await getDocs(collection(db, 'movies'));
@@ -62,9 +61,9 @@ const firebaseConfig = {
   };
   
   
-  export const updateMovie = async (id, nuevaInformacion) => {
+  export const updateMovie = async (id, newMovieData) => {
     try {
-      await updateDoc(doc(db, "movies", id), nuevaInformacion);
+      await updateDoc(doc(db, "movies", id), newMovieData);
       console.log('Película actualizada con éxito');
     } catch (error) {
       console.error('Error updating movie:', error);
@@ -82,7 +81,7 @@ const firebaseConfig = {
   };
   
 
-
+  /* GENRES */
   export const getAllGenres = async () => {
     try {
       const querySnapshot = await getDocs(collection(db, 'genres'));
@@ -97,7 +96,7 @@ const firebaseConfig = {
 
 
 
-
+/* USERS */
   export const registerUser = async (email, password, username) => {
     try {
       const auth = getAuth();
@@ -108,9 +107,6 @@ const firebaseConfig = {
       // Obtener el ID del usuario registrado
       const userId = userCredential.user.uid;
   
-      // Guardar información adicional en Firestore
-      //const usersCollection = collection(db, 'users');
-      //const result = await addDoc(usersCollection, { userId, email, username, isAdmin: false });
       const result = await setDoc(doc(db, "users", userId), {
         email: email.trim(),
         isAdmin: false,
@@ -118,7 +114,6 @@ const firebaseConfig = {
         username: username
       });
 
-      
       
       var objResult = {};
       objResult.accessToken = userCredential._tokenResponse.idToken;
@@ -160,10 +155,8 @@ const firebaseConfig = {
   export const logoutUser = async () => {
     try {
       const auth = getAuth();
-  
       await signOut(auth);
   
-      // Limpiar el localStorage u otras tareas necesarias
       localStorage.removeItem("auth");
       localStorage.removeItem("accesToken");
     } catch (error) {
@@ -174,15 +167,7 @@ const firebaseConfig = {
 
   export const getUserByID = async (userIdToSearch) => {
 
-/*
-    const usersCollection = collection(db, 'users');
-    console.log(usersCollection)
-    const query = usersCollection.Where('userId', '==', userIdToSearch);
-  */
     try {
-      //const q = query(collection(db, "users"), where("userId", "==", userIdToSearch));
-      //const querySnapshot = await getDoc(q);
-
       const docUserRef = doc(db, "users", userIdToSearch);
       const docUser = await getDoc(docUserRef);
 
@@ -195,5 +180,49 @@ const firebaseConfig = {
     } catch (error) {
       console.error('Error:', error.message);
       throw error;
+    }
+  };
+
+
+
+  /* COMMENTS */
+  export const getAllCommentsByMovie = async (movieId) => {
+    try {
+      const q = query(collection(db, "comments"), where("movie", "==", movieId));
+
+      const querySnapshot = await getDocs(q);
+      let comments = [];
+      querySnapshot.forEach((doc) => {
+        let comment = doc.data();
+        comment.id = doc.id;
+        comments.push(comment);
+        console.log(doc.id, " => ", doc.data());
+      });
+      return comments;
+    } catch (error) {
+      console.error('Error getting comments:', error);
+      return [];
+    }
+  };
+
+  export const addComment = async (movieId, comment) => {
+    try {
+      
+      const userData = JSON.parse(localStorage.getItem("auth"));
+  
+      var commentObj = {};
+      commentObj.comment = comment;
+      commentObj.creatorUsername = userData.username;
+      commentObj.creator = userData.uid;
+      commentObj.movie = movieId;
+      commentObj.negativeVotes = 0;
+      commentObj.positiveVotes = 0;
+      commentObj.datetime = Timestamp.fromDate(new Date());
+
+      const docRef = await addDoc(collection(db, 'comments'), commentObj);
+      commentObj.id = docRef.id;
+      return commentObj;
+    } catch (error) {
+      console.error('Error adding movie:', error);
     }
   };

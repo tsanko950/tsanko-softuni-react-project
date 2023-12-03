@@ -197,7 +197,11 @@ export default function Header() {
                     >
                       <div className="scroll-content">
                         <li>
-                          <Link to={Path.CreateEditMovie}>Add movie</Link>
+                          <Link
+                            to={Path.CreateEditMovie.replace("/:movieId", "")}
+                          >
+                            Add movie
+                          </Link>
                         </li>
                         <li>
                           <Link to="profile.html">Profile</Link>
