@@ -54,7 +54,6 @@ export default function MovieListItem({ movie, genres }) {
           {genres.map((genre) => (
             <li key={genre.id}>{genre.description}</li>
           ))}
-          <li>{movie.year}</li>
         </ul>
       </div>
     </div>

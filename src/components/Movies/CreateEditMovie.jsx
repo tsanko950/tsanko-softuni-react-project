@@ -51,7 +51,6 @@ const CreateEditMovie = ({ onEdit }) => {
     }, [movieId]);
   }
 
-  console.log(movieId);
   const changeHandler = (e) => {
     let value = "";
 
@@ -243,13 +242,13 @@ const CreateEditMovie = ({ onEdit }) => {
                     </div>
                     <div className="col-12 col-md-6 col-lg-12 col-xl-6">
                       <div className="sign__group">
-                        <label className="sign__label" htmlFor="imageURL">
+                        <label className="sign__label" htmlFor="imageUrl">
                           Image URL
                         </label>
                         <input
-                          id="imageURL"
+                          id="imageUrl"
                           type="text"
-                          name="imageURL"
+                          name="imageUrl"
                           className="sign__input"
                           placeholder="https://..."
                           value={movieValues.imageUrl}
@@ -259,13 +258,13 @@ const CreateEditMovie = ({ onEdit }) => {
                     </div>
                     <div className="col-12 col-md-6 col-lg-12 col-xl-6">
                       <div className="sign__group">
-                        <label className="sign__label" htmlFor="trailerURL">
+                        <label className="sign__label" htmlFor="trailerUrl">
                           Trailer URL
                         </label>
                         <input
-                          id="trailerURL"
+                          id="trailerUrl"
                           type="text"
-                          name="trailerURL"
+                          name="trailerUrl"
                           className="sign__input"
                           placeholder="https://..."
                           value={movieValues.trailerUrl}
@@ -304,6 +303,7 @@ const CreateEditMovie = ({ onEdit }) => {
                         <textarea
                           id="plot"
                           name="plot"
+                          style={{ scrollbarWidth: "thin" }}
                           className="sign__textarea"
                           placeholder="In 1945, the New York City Corleone family don, Vito Corleone, listens to requests during his daughter Connie's wedding to Carlo. Vito's youngest son Michael, a forme.."
                           value={movieValues.plot}

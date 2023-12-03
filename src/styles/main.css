@@ -3609,7 +3609,6 @@ body::-webkit-scrollbar-thumb {
   fill: #2f80ed;
   transition: fill 0.5s ease;
   margin-right: 6px;
-  margin-bottom: 3px;
 }
 .movie__edit a {
   margin-left: 10px;
@@ -4069,9 +4068,6 @@ body::-webkit-scrollbar-thumb {
   display: none;
 }
 .comments__actions button svg {
-  width: 18px;
-  height: auto;
-  stroke: #2f80ed;
   transition: 0.5s;
 }
 .comments__actions button:hover span {
@@ -5523,4 +5519,31 @@ body::-webkit-scrollbar-thumb {
 }
 .plyr--video .plyr__control svg {
   filter: none;
+}
+
+
+
+
+
+
+
+.comments__edit {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 20px 0 0;
+  position: relative;
+}
+
+.red-svg{
+  stroke: #eb5757;
+  width: 10px;
+  height: auto;
+}
+
+.yellow-svg{
+  stroke: #ffc312;
+  width: 12px;
+  height: auto;
 }

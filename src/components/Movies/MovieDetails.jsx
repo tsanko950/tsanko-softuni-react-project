@@ -3,7 +3,8 @@ import { Link, useParams } from "react-router-dom";
 import useForm from "../../hooks/useForm";
 import * as firebaseServices from "../../services/firebaseServices";
 import { convertYouTubeEmbedLink, getDuration } from "../../utils/utils";
-import styles from "./CreateEditMovie.module.css";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 import Path from "../../paths";
 import AuthContext from "../../contexts/autoContext";
 import Comment from "../Comments/Comment";
@@ -232,7 +233,7 @@ export default function MovieDetails() {
                         aria-selected="true"
                       >
                         <h4>Comments</h4>
-                        <span>5</span>
+                        <span>{comments.length}</span>
                       </a>
                     </li>
                     <li className="nav-item">
@@ -264,6 +265,7 @@ export default function MovieDetails() {
                             key={comment.id}
                             comment={comment}
                             movieID={movieId}
+                            dispatch={dispatch}
                           />
                         ))}
                       </ul>

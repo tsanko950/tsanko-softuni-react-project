@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { collection, getFirestore, Timestamp, updateDoc, doc, setDoc, getDoc, where, query, getDocs, addDoc } from "firebase/firestore";
+import { collection, getFirestore, Timestamp, updateDoc, doc, deleteDoc, setDoc, getDoc, where, query, getDocs, addDoc } from "firebase/firestore";
 import { getAuth, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { getFunctions } from "firebase/functions";
 
@@ -224,5 +224,15 @@ const firebaseConfig = {
       return commentObj;
     } catch (error) {
       console.error('Error adding movie:', error);
+    }
+  };
+
+  export const removeComment = async (id) => {
+    try {
+      console.log(id);
+      await deleteDoc(doc(db, "comments", id));
+      
+    } catch (error) {
+      console.error('Error getting comments:', error);
     }
   };
