@@ -13,6 +13,8 @@ import reducer from "../Comments/commentReducer";
 export default function MovieDetails() {
   const [movie, setMovie] = useState({});
   const [genres, setGenres] = useState([]);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [commentToEdit, setCommentToEdit] = useState(null);
   const [comments, dispatch] = useReducer(reducer, []);
   const { isAuthenticated, userId } = useContext(AuthContext);
   const { movieId } = useParams();
@@ -52,20 +54,53 @@ export default function MovieDetails() {
   }, [movieId]);
 
   const addCommentHandler = async (values) => {
-    const newComment = await firebaseServices.addComment(
-      movieId,
-      values.comment
-    );
+    // EDIT COMMENT // EDIT COMMENT // EDIT COMMENT // EDIT COMMENT // EDIT COMMENT // EDIT COMMENT
+    if (isEditMode) {
+      commentToEdit.comment = values.comment;
+      setCommentToEdit(commentToEdit);
+      await firebaseServices.updateComment(commentToEdit.id, values.comment);
+      const editedComment = commentToEdit;
+      dispatch({
+        type: "EDIT_COMMENT",
+        payload: editedComment,
+      });
+    } else {
+      const newComment = await firebaseServices.addComment(
+        movieId,
+        values.comment
+      );
 
-    dispatch({
-      type: "ADD_COMMENT",
-      payload: newComment,
-    });
+      dispatch({
+        type: "ADD_COMMENT",
+        payload: newComment,
+      });
+    }
+
+    resetForm();
   };
 
-  const { values, onChange, onSubmit } = useForm(addCommentHandler, {
-    comment: "",
-  });
+  // SET VALUE IN TEXTAREA
+  const editCommentHandler = async (comment) => {
+    console.log(comment);
+    setIsEditMode(true);
+    setCommentToEdit(comment);
+    // Haz scroll hasta el formulario de comentarios
+    document.getElementById("comment").scrollIntoView({ behavior: "smooth" });
+    setEditCommentValue({ comment: comment.comment });
+
+    /*
+    firebaseServices.removeComment(comment.id);
+    dispatch({
+      type: "DELETE_COMMENT",
+      payload: comment.id,
+    });
+    */
+  };
+
+  const { values, onChange, onSubmit, resetForm, setEditCommentValue } =
+    useForm(addCommentHandler, {
+      comment: "",
+    });
 
   return (
     <>
@@ -266,6 +301,7 @@ export default function MovieDetails() {
                             comment={comment}
                             movieID={movieId}
                             dispatch={dispatch}
+                            onEdit={() => editCommentHandler(comment)}
                           />
                         ))}
                       </ul>

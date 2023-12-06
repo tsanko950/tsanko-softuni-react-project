@@ -7,6 +7,10 @@ export default function useForm(submitHandler, initialValues) {
     //     setValues(initialValues);
     // }, [initialValues])
 
+    const resetForm = () => {
+        setValues(initialValues);
+    };
+
     const onChange = (e) => {
         
         setValues(state => ({
@@ -21,9 +25,15 @@ export default function useForm(submitHandler, initialValues) {
         submitHandler(values);
     };
 
+    const setEditCommentValue = (newValue) => {
+        setValues(newValue);
+    };
+
     return {
         values,
         onChange,
         onSubmit,
+        resetForm,
+        setEditCommentValue
     }
 }

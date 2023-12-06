@@ -8,11 +8,10 @@ import reducer from "../Comments/commentReducer";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
-export default function Comment({ movieID, comment, dispatch }) {
+export default function Comment({ movieID, comment, dispatch, onEdit }) {
   const { userId } = useContext(AuthContext);
 
   const removeCommentHandler = async () => {
-    console.log(comment.id);
     Swal.fire({
       title: "Are you sure you want to delete your comment?",
       text: "You won't be able to revert this!",
@@ -31,7 +30,7 @@ export default function Comment({ movieID, comment, dispatch }) {
           icon: "success",
           title: "Your comment has been deleted successfully",
           showConfirmButton: false,
-          timer: 2000,
+          timer: 1500,
         });
       }
     });
@@ -109,7 +108,7 @@ export default function Comment({ movieID, comment, dispatch }) {
 
         {userId == comment.creator ? (
           <>
-            <button type="button">
+            <button type="button" onClick={onEdit}>
               <svg
                 className="yellow-svg"
                 xmlns="http://www.w3.org/2000/svg"

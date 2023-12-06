@@ -196,7 +196,6 @@ const firebaseConfig = {
         let comment = doc.data();
         comment.id = doc.id;
         comments.push(comment);
-        console.log(doc.id, " => ", doc.data());
       });
       return comments;
     } catch (error) {
@@ -226,12 +225,22 @@ const firebaseConfig = {
       console.error('Error adding movie:', error);
     }
   };
+ // EDIT COMMENT
+  export const updateComment = async (id, newCommentData) => {
+    try {
+      console.log(id);
+      await updateDoc(doc(db, "comments", id), {
+        comment: newCommentData
+      });
+     
+    } catch (error) {
+      console.error('Error updating movie:', error);
+    }
+  };
 
   export const removeComment = async (id) => {
     try {
-      console.log(id);
       await deleteDoc(doc(db, "comments", id));
-      
     } catch (error) {
       console.error('Error getting comments:', error);
     }
