@@ -1,39 +1,66 @@
-import { useState, useEffect } from "react"
+import { useState } from "react";
 
-export default function useForm(submitHandler, initialValues) {
+export default function useForm(submitHandler, initialValues, validationRules) {
     const [values, setValues] = useState(initialValues);
-
-    // useEffect(() => {
-    //     setValues(initialValues);
-    // }, [initialValues])
-
+    const [errors, setErrors] = useState({});
+  
     const resetForm = () => {
-        setValues(initialValues);
+      setValues(initialValues);
+      setErrors({});
     };
-
+  
     const onChange = (e) => {
-        
-        setValues(state => ({
-            ...state,
-            [e.target.name]: e.target.value
+      const { name, value } = e.target;
+       
+      setValues(state => ({
+        ...state,
+        [e.target.name]: e.target.value
+    }));
+      console.log(values)
+      // Limpiar el error asociado al campo
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]: "",
+      }));
+    };
+  
+    const validateField = (name, value) => {
+      const validationRule = validationRules[name];
+  
+      if (validationRule) {
+        const error = validationRule(value);
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          [name]: error,
         }));
-        // console.log([e.target.name] + " " + e.target.value)
+      }
     };
-
+  
     const onSubmit = (e) => {
-        e.preventDefault();
-        submitHandler(values);
+      e.preventDefault();
+  
+      // Validar todos los campos antes de enviar
+      for (const key in validationRules) {
+        if (validationRules.hasOwnProperty(key)) {
+          validateField(key, values[key]);
+        }
+      }
+      
+     if (Object.values(errors).some((error) => error !== "") || Object.keys(errors).length === 0) {
+        console.log("Formulario no válido:", errors);
+        return;
+      }
+      console.log(e)
+      return;
+      submitHandler(values);
     };
-
-    const setEditCommentValue = (newValue) => {
-        setValues(newValue);
-    };
-
+  
     return {
-        values,
-        onChange,
-        onSubmit,
-        resetForm,
-        setEditCommentValue
-    }
-}
+      values,
+      errors,
+      onChange,
+      onSubmit,
+      resetForm,
+    };
+  }
+  

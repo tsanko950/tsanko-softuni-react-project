@@ -1,20 +1,43 @@
 import { useContext } from "react";
 import { Link } from "react-router-dom";
 import Path from "../../paths";
+import styles from "../Movies/CreateEditMovie.module.css";
 import AuthContext from "../../contexts/autoContext";
 import useForm from "../../hooks/useForm";
 
-const LoginFormKyes = {
+const LoginFormKeys = {
   Email: "email",
   Password: "password",
 };
 
 export default function Login() {
   const { loginSubmitHandler, isAuthenticated } = useContext(AuthContext);
-  const { values, onChange, onSubmit } = useForm(loginSubmitHandler, {
-    [LoginFormKyes.Email]: "",
-    [LoginFormKyes.Password]: "",
-  });
+
+  const validate = {
+    [LoginFormKeys.Email]: (value) => {
+      if (!value) {
+        return "Email is required";
+      }
+      // Puedes agregar una validación de formato de correo electrónico aquí si es necesario
+      return "";
+    },
+    [LoginFormKeys.Password]: (value) => {
+      if (!value) {
+        return "Password is required";
+      }
+      return "";
+    },
+  };
+
+  const { values, errors, onChange, onSubmit, resetForm } = useForm(
+    loginSubmitHandler,
+    {
+      [LoginFormKeys.Email]: "",
+      [LoginFormKeys.Password]: "",
+    },
+    validate
+  );
+
   if (isAuthenticated) {
     navigate(Path.Home);
   }
@@ -34,21 +57,31 @@ export default function Login() {
                   <input
                     type="text"
                     className="sign__input"
-                    name={LoginFormKyes.Email}
+                    name={LoginFormKeys.Email}
                     placeholder="example@mail.com"
                     onChange={onChange}
-                    value={values[LoginFormKyes.Email]}
+                    value={values[LoginFormKeys.Email]}
                   />
+                  {errors[LoginFormKeys.Email] && (
+                    <p className={styles.errorMessage}>
+                      {errors[LoginFormKeys.Email]}
+                    </p>
+                  )}
                 </div>
                 <div className="sign__group">
                   <input
                     type="password"
                     className="sign__input"
                     placeholder="Password"
-                    name={LoginFormKyes.Password}
+                    name={LoginFormKeys.Password}
                     onChange={onChange}
-                    value={values[LoginFormKyes.Password]}
+                    value={values[LoginFormKeys.Password]}
                   />
+                  {errors[LoginFormKeys.Password] && (
+                    <p className={styles.errorMessage}>
+                      {errors[LoginFormKeys.Password]}
+                    </p>
+                  )}
                 </div>
                 <button className="sign__btn" type="submit">
                   Sign in

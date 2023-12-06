@@ -39,7 +39,6 @@ const CreateEditMovie = ({ onEdit }) => {
       .getAllGenres()
       .then((genresData) => {
         setGenres(genresData);
-        console.log(genresData);
       })
       .catch((error) => {
         console.error("Error fetching genres:", error);
@@ -53,7 +52,6 @@ const CreateEditMovie = ({ onEdit }) => {
         .getMovieById(movieId)
         .then((movieData) => {
           if (movieData) {
-            console.log(movieData);
             setMovieValues(movieData);
           } else {
           }
@@ -65,49 +63,51 @@ const CreateEditMovie = ({ onEdit }) => {
   }
 
   const changeHandler = (e) => {
-    let value = "";
-    let isCheckbox = false;
-    switch (e.target.type) {
+    const { name, value, type, checked } = e.target;
+
+    // Limpiar el error asociado al campo
+    setErrors((state) => ({
+      ...state,
+      [name]: "",
+    }));
+
+    let newValue = value;
+
+    switch (type) {
       case "number":
-        value = Number(e.target.value);
+        newValue = Number(value);
         break;
       case "checkbox":
-        value = e.target.checked;
-        isCheckbox = true;
-        break;
-      default:
-        value = e.target.value;
-        break;
-    }
+        if (name.startsWith("genre_")) {
+          const genreId = parseInt(name.replace("genre_", ""), 10);
+          setMovieValues((state) => {
+            const updatedGenre = state.genre.includes(genreId)
+              ? state.genre.filter((id) => id !== genreId)
+              : [...state.genre, genreId];
 
-    if (isCheckbox == true) {
-      const genreId = parseInt(e.target.name.replace("genre_", ""));
-      const isChecked = e.target.checked;
+            // Actualizar la validación de géneros después de modificar state.genre
+            genreValidator(updatedGenre);
 
-      setMovieValues((state) => {
-        if (state.genre.includes(genreId) && !isChecked) {
-          // Si el género ya está presente y el checkbox se desmarca, lo eliminamos
-          return {
-            ...state,
-            genre: state.genre.filter((id) => id != genreId),
-          };
-        } else if (!state.genre.includes(genreId) && isChecked) {
-          // Si el género no está presente y el checkbox se marca, lo agregamos
-          return {
-            ...state,
-            genre: [...state.genre, genreId],
-          };
+            return {
+              ...state,
+              genre: updatedGenre,
+            };
+          });
+
+          return;
+        } else {
+          newValue = checked;
         }
 
-        return state;
-      });
-    } else {
-      setMovieValues((state) => ({
-        ...state,
-        [e.target.name]: value,
-      }));
+        break;
+      default:
+        break;
     }
 
+    setMovieValues((state) => ({
+      ...state,
+      [name]: newValue,
+    }));
     console.log(movieValues);
   };
 
@@ -115,8 +115,90 @@ const CreateEditMovie = ({ onEdit }) => {
     // setMovieValues(movieInitialState);
   };
 
+  const validateField = (fieldName, fieldValue) => {
+    switch (fieldName) {
+      case "year":
+        if (
+          isNaN(fieldValue) ||
+          fieldValue < 1900 ||
+          fieldValue > new Date().getFullYear() + 1
+        ) {
+          setErrors((state) => ({
+            ...state,
+            [fieldName]:
+              "Year should be a valid year between 1900 and " +
+              (new Date().getFullYear() + 1),
+          }));
+        } else {
+          setErrors((state) => ({
+            ...state,
+            [fieldName]: "",
+          }));
+        }
+        break;
+      case "duration":
+        if (isNaN(fieldValue) || fieldValue < 1 || fieldValue > 240) {
+          setErrors((state) => ({
+            ...state,
+            [fieldName]:
+              "Duration should be a valid duration between 1 and 240 minutes",
+          }));
+        } else {
+          setErrors((state) => ({
+            ...state,
+            [fieldName]: "",
+          }));
+        }
+        break;
+      // Agregar más casos para otros campos si es necesario
+      case "title":
+      case "cast":
+      case "director":
+      case "imageUrl":
+      case "plot":
+      case "trailerUrl":
+        if (fieldValue.trim() === "") {
+          setErrors((state) => ({
+            ...state,
+            [fieldName]: `${
+              fieldName.charAt(0).toUpperCase() + fieldName.slice(1)
+            } is required`,
+          }));
+        } else {
+          setErrors((state) => ({
+            ...state,
+            [fieldName]: "",
+          }));
+        }
+        break;
+      default:
+      // Hacer algo en caso de que el campo no esté manejado
+    }
+  };
+
   const submitHandler = (e) => {
     e.preventDefault();
+
+    // Validar todos los campos
+    const validationErrors = {};
+
+    // Validar campos obligatorios y otros campos específicos
+    for (const key in movieValues) {
+      if (movieValues.hasOwnProperty(key)) {
+        validateField(key, movieValues[key]);
+      }
+    }
+
+    genreValidator();
+    console.log(errors);
+    // Verificar si hay errores de validación
+    if (
+      Object.values(errors).some((error) => error !== "") ||
+      Object.keys(errors).length === 0
+    ) {
+      console.log("Formulario no válido:", errors);
+      return;
+    }
 
     try {
       movieValues.creator = userId;
@@ -166,7 +248,8 @@ const CreateEditMovie = ({ onEdit }) => {
       if (movieValues.duration < 1 || movieValues.duration > 240) {
         setErrors((state) => ({
           ...state,
-          duration: "Duration should be between 1 and " + 240 + " min",
+          duration:
+            "Duration should be a valid duration between 1 and 240 minutes",
         }));
       } else {
         if (errors.duration) {
@@ -184,11 +267,18 @@ const CreateEditMovie = ({ onEdit }) => {
     }
   };
 
-  const genreValidator = () => {
-    if (movieValues.genre.length == 0) {
+  const genreValidator = (updatedGenre) => {
+    const genreToValidate = updatedGenre || movieValues.genre;
+
+    if (genreToValidate.length === 0) {
       setErrors((state) => ({
         ...state,
         genre: "Should select at least one genre",
+      }));
+    } else {
+      setErrors((state) => ({
+        ...state,
+        genre: "",
       }));
     }
   };
@@ -229,6 +319,9 @@ const CreateEditMovie = ({ onEdit }) => {
                           onChange={changeHandler}
                           onBlur={() => console.log("onBlur")}
                         />
+                        {errors.title && (
+                          <p className={styles.errorMessage}>{errors.title}</p>
+                        )}
                       </div>
                     </div>
                     <div className="col-12 col-md-6 col-lg-12 col-xl-6">
@@ -245,6 +338,11 @@ const CreateEditMovie = ({ onEdit }) => {
                           value={movieValues.director}
                           onChange={changeHandler}
                         />
+                        {errors.director && (
+                          <p className={styles.errorMessage}>
+                            {errors.director}
+                          </p>
+                        )}
                       </div>
                     </div>
                     <div className="col-12 col-md-6 col-lg-12 col-xl-6">
@@ -261,6 +359,9 @@ const CreateEditMovie = ({ onEdit }) => {
                           value={movieValues.cast}
                           onChange={changeHandler}
                         />
+                        {errors.cast && (
+                          <p className={styles.errorMessage}>{errors.cast}</p>
+                        )}
                       </div>
                     </div>
                     <div className="col-12 col-md-6 col-lg-12 col-xl-6">
@@ -302,6 +403,11 @@ const CreateEditMovie = ({ onEdit }) => {
                           value={movieValues.imageUrl}
                           onChange={changeHandler}
                         />
+                        {errors.imageUrl && (
+                          <p className={styles.errorMessage}>
+                            {errors.imageUrl}
+                          </p>
+                        )}
                       </div>
                     </div>
                     <div className="col-12 col-md-6 col-lg-12 col-xl-6">
@@ -318,6 +424,11 @@ const CreateEditMovie = ({ onEdit }) => {
                           value={movieValues.trailerUrl}
                           onChange={changeHandler}
                         />
+                        {errors.trailerUrl && (
+                          <p className={styles.errorMessage}>
+                            {errors.trailerUrl}
+                          </p>
+                        )}
                       </div>
                     </div>
                     <div className="col-12 col-md-6 col-lg-12 col-xl-6">
@@ -378,10 +489,10 @@ const CreateEditMovie = ({ onEdit }) => {
                             </label>
                           </div>
                         ))}
-                        {errors.year && (
-                          <p className={styles.errorMessage}>{errors.genre}</p>
-                        )}
                       </div>
+                      {errors.genre && (
+                        <p className={styles.errorMessage}>{errors.genre}</p>
+                      )}
                     </div>
                     <div className="col-12 col-md-6 col-lg-12 col-xl-6">
                       <div className="sign__group">

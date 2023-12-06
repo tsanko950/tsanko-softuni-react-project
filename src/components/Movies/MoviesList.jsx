@@ -25,7 +25,6 @@ const MoviesList = () => {
   }, []);
 
   const getMovieGenres = (movie) => {
-    console.log(movie.genre);
     return genres.filter((genre) => movie.genre.includes(parseInt(genre.id)));
   };
 
