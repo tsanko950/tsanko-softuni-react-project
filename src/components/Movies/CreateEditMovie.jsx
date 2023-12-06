@@ -9,7 +9,7 @@ let movieInitialState = {
   cast: "",
   director: "",
   duration: 0,
-  genre: "",
+  genre: [],
   imageUrl: "",
   plot: "",
   title: "",
@@ -21,6 +21,7 @@ const CreateEditMovie = ({ onEdit }) => {
   const [movieValues, setMovieValues] = useState(movieInitialState);
   const { isAuthenticated, userId } = useContext(AuthContext);
   const [errors, setErrors] = useState({});
+  const [genres, setGenres] = useState([]);
   const { movieId } = useParams();
   const navigate = useNavigate();
 
@@ -32,6 +33,18 @@ const CreateEditMovie = ({ onEdit }) => {
     }
     //firebaseServices.getMovieByID(movieId).then((result) => setMovie(result));
   }, [movieId]);
+
+  useEffect(() => {
+    firebaseServices
+      .getAllGenres()
+      .then((genresData) => {
+        setGenres(genresData);
+        console.log(genresData);
+      })
+      .catch((error) => {
+        console.error("Error fetching genres:", error);
+      });
+  }, []);
 
   if (typeof movieId != "undefined") {
     isUpdate = true;
@@ -53,23 +66,49 @@ const CreateEditMovie = ({ onEdit }) => {
 
   const changeHandler = (e) => {
     let value = "";
-
+    let isCheckbox = false;
     switch (e.target.type) {
       case "number":
         value = Number(e.target.value);
         break;
-      case "chackbox":
+      case "checkbox":
         value = e.target.checked;
+        isCheckbox = true;
         break;
       default:
         value = e.target.value;
         break;
     }
 
-    setMovieValues((state) => ({
-      ...state,
-      [e.target.name]: e.target.value,
-    }));
+    if (isCheckbox == true) {
+      const genreId = parseInt(e.target.name.replace("genre_", ""));
+      const isChecked = e.target.checked;
+
+      setMovieValues((state) => {
+        if (state.genre.includes(genreId) && !isChecked) {
+          // Si el género ya está presente y el checkbox se desmarca, lo eliminamos
+          return {
+            ...state,
+            genre: state.genre.filter((id) => id != genreId),
+          };
+        } else if (!state.genre.includes(genreId) && isChecked) {
+          // Si el género no está presente y el checkbox se marca, lo agregamos
+          return {
+            ...state,
+            genre: [...state.genre, genreId],
+          };
+        }
+
+        return state;
+      });
+    } else {
+      setMovieValues((state) => ({
+        ...state,
+        [e.target.name]: value,
+      }));
+    }
+
+    console.log(movieValues);
   };
 
   const resetFormHandler = () => {
@@ -141,6 +180,15 @@ const CreateEditMovie = ({ onEdit }) => {
       setErrors((state) => ({
         ...state,
         duration: "Duration should be a number",
+      }));
+    }
+  };
+
+  const genreValidator = () => {
+    if (movieValues.genre.length == 0) {
+      setErrors((state) => ({
+        ...state,
+        genre: "Should select at least one genre",
       }));
     }
   };
@@ -292,6 +340,46 @@ const CreateEditMovie = ({ onEdit }) => {
                         />
                         {errors.year && (
                           <p className={styles.errorMessage}>{errors.year}</p>
+                        )}
+                      </div>
+                      <div className="sign__group">
+                        <label
+                          className="sign__label"
+                          htmlFor="year"
+                          style={{ width: "100%" }}
+                        >
+                          Genres
+                        </label>
+                        <br />
+                        {genres.map((genre) => (
+                          <div
+                            className="sign__group sign__group--checkbox"
+                            key={genre.id}
+                          >
+                            <input
+                              id={"genre_" + genre.id}
+                              name={"genre_" + genre.id}
+                              type="checkbox"
+                              idgenre={genre.id}
+                              onChange={changeHandler}
+                              checked={
+                                movieValues.genre.includes(
+                                  parseInt(genre.id, 10)
+                                )
+                                  ? "checked"
+                                  : ""
+                              }
+                            />
+                            <label
+                              className="label-genre"
+                              htmlFor={"genre_" + genre.id}
+                            >
+                              {genre.description}
+                            </label>
+                          </div>
+                        ))}
+                        {errors.year && (
+                          <p className={styles.errorMessage}>{errors.genre}</p>
                         )}
                       </div>
                     </div>

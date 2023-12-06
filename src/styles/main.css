@@ -4790,7 +4790,7 @@ body::-webkit-scrollbar-thumb {
   font-weight: normal;
   position: relative;
   cursor: pointer;
-  padding-left: 35px;
+  padding-left: 30px;
   line-height: 22px;
   margin: 0;
 }
@@ -5547,3 +5547,10 @@ body::-webkit-scrollbar-thumb {
   width: 12px;
   height: auto;
 }
+
+.sign__group--checkbox {
+  width: max-content !important;
+  text-align: left !important;
+  margin-right: 25px !important;
+}
+ 

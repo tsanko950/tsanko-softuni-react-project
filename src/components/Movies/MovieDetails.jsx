@@ -54,7 +54,6 @@ export default function MovieDetails() {
   }, [movieId]);
 
   const addCommentHandler = async (values) => {
-    // EDIT COMMENT // EDIT COMMENT // EDIT COMMENT // EDIT COMMENT // EDIT COMMENT // EDIT COMMENT
     if (isEditMode) {
       commentToEdit.comment = values.comment;
       setCommentToEdit(commentToEdit);
