@@ -10,6 +10,33 @@ const Home = () => {
   const [movies, setMovies] = useState([]);
   const [genres, setGenres] = useState([]);
   const [selectedGenre, setSelectedGenre] = useState(-1);
+  const [sortingOption, setSortingOption] = useState("title");
+
+  const handleSortingChange = (event) => {
+    setSortingOption(event.target.id);
+  };
+
+  useEffect(() => {
+    console.log(sortingOption);
+    // Simulación de la llamada a la API (reemplázalo con la lógica real)
+    switch (sortingOption) {
+      case "newest":
+        console.log(movies[0].title);
+        movies.sort((a, b) => parseInt(b.year) - parseInt(a.year));
+        console.log(movies[0].title);
+        break;
+      case "duration":
+        movies.sort((a, b) => parseInt(a.duration) - parseInt(b.duration));
+        break;
+      case "title":
+        movies.sort((a, b) => a.title.localeCompare(b.title));
+        break;
+      default:
+        // En el caso por defecto, no necesitas hacer nada
+        break;
+    }
+    setMovies([...movies]); // Crear una nueva referencia para que React detecte el cambio
+  }, [sortingOption]);
 
   useEffect(() => {
     firebaseServices
@@ -73,18 +100,20 @@ const Home = () => {
                     <option value={8}>2021</option>
                   </select>
                 </div>
-                <div className="slider-radio">
+                <div className="slider-radio" onChange={handleSortingChange}>
+                  <input type="radio" name="order" id="newest" />
+                  <label htmlFor="newest">Newest</label>
+
+                  <input type="radio" name="order" id="duration" />
+                  <label htmlFor="duration">Duration</label>
+
                   <input
                     type="radio"
-                    name="grade"
-                    id="featured"
+                    name="order"
+                    id="title"
                     defaultChecked="checked"
                   />
-                  <label htmlFor="featured">Featured</label>
-                  <input type="radio" name="grade" id="popular" />
-                  <label htmlFor="popular">Popular</label>
-                  <input type="radio" name="grade" id="newest" />
-                  <label htmlFor="newest">Newest</label>
+                  <label htmlFor="title">Title</label>
                 </div>
               </div>
               <div className="row row--grid">
