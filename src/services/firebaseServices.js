@@ -45,7 +45,7 @@ const firebaseConfig = {
 
   export const getMovieById = async (movieId) => {
     try {
-      const movieDoc = doc(db, 'movies', movieId);
+      const movieDoc = await doc(db, 'movies', movieId);
       const docSnap = await getDoc(movieDoc);
   
       if (docSnap.exists()) {
@@ -124,7 +124,7 @@ const firebaseConfig = {
       console.log(objResult);
       return objResult;
     } catch (error) {
-      console.error('Error al registrar usuario:', error.message);
+      return error.code;
     }
   };
   
@@ -144,11 +144,10 @@ const firebaseConfig = {
       objResult.isAdmin = userInfo.isAdmin;
       objResult.uid = userCredential.user.uid;
       
-      console.log(objResult);
       return objResult;
     } catch (error) {
-      console.error('Error:', error.message);
-      throw error;
+      console.error(error.code);
+      return error.code;
     }
   };
 

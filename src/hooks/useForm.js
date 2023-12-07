@@ -15,8 +15,8 @@ export default function useForm(submitHandler, initialValues, validationRules) {
       setValues(state => ({
         ...state,
         [e.target.name]: e.target.value
-    }));
-      console.log(values)
+      }));
+
       // Limpiar el error asociado al campo
       setErrors((prevErrors) => ({
         ...prevErrors,
@@ -26,7 +26,7 @@ export default function useForm(submitHandler, initialValues, validationRules) {
   
     const validateField = (name, value) => {
       const validationRule = validationRules[name];
-  
+      
       if (validationRule) {
         const error = validationRule(value);
         setErrors((prevErrors) => ({
@@ -38,20 +38,15 @@ export default function useForm(submitHandler, initialValues, validationRules) {
   
     const onSubmit = (e) => {
       e.preventDefault();
-  
       // Validar todos los campos antes de enviar
       for (const key in validationRules) {
         if (validationRules.hasOwnProperty(key)) {
           validateField(key, values[key]);
         }
       }
-      
-     if (Object.values(errors).some((error) => error !== "") || Object.keys(errors).length === 0) {
-        console.log("Formulario no válido:", errors);
+       if (Object.values(errors).some((error) => error != "") || Object.keys(errors).length === 0) {
         return;
       }
-      console.log(e)
-      return;
       submitHandler(values);
     };
   

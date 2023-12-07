@@ -126,9 +126,9 @@ $(document).ready(function () {
 	/*==============================
 	Select
 	==============================*/
-	$('.catalog__select').select2({
+	/*$('.catalog__select').select2({
 		minimumResultsForSearch: Infinity
-	});
+	});*/
 
 	/*==============================
 	Carousel

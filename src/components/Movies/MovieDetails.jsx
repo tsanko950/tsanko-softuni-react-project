@@ -78,6 +78,18 @@ export default function MovieDetails() {
     resetForm();
   };
 
+  const checkAuthenticatedComment = async () => {
+    if (!isAuthenticated) {
+      Swal.fire({
+        title: "You need to sign in for add comment",
+        icon: "warning",
+        showCancelButton: false,
+        confirmButtonColor: "#3085d6",
+        confirmButtonText: "OK",
+      });
+    }
+  };
+
   // SET VALUE IN TEXTAREA
   const editCommentHandler = async (comment) => {
     console.log(comment);
@@ -305,71 +317,6 @@ export default function MovieDetails() {
                         ))}
                       </ul>
 
-                      <div className="catalog__paginator-wrap catalog__paginator-wrap--comments">
-                        <span className="catalog__pages">5 from 16</span>
-                        <ul className="catalog__paginator">
-                          <li>
-                            <a href="#">
-                              <svg
-                                width={14}
-                                height={11}
-                                viewBox="0 0 14 11"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  d="M0.75 5.36475L13.1992 5.36475"
-                                  strokeWidth="1.2"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                />
-                                <path
-                                  d="M5.771 10.1271L0.749878 5.36496L5.771 0.602051"
-                                  strokeWidth="1.2"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                />
-                              </svg>
-                            </a>
-                          </li>
-                          <li className="active">
-                            <a href="#">1</a>
-                          </li>
-                          <li>
-                            <a href="#">2</a>
-                          </li>
-                          <li>
-                            <a href="#">3</a>
-                          </li>
-                          <li>
-                            <a href="#">4</a>
-                          </li>
-                          <li>
-                            <a href="#">
-                              <svg
-                                width={14}
-                                height={11}
-                                viewBox="0 0 14 11"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  d="M13.1992 5.3645L0.75 5.3645"
-                                  strokeWidth="1.2"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                />
-                                <path
-                                  d="M8.17822 0.602051L13.1993 5.36417L8.17822 10.1271"
-                                  strokeWidth="1.2"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                />
-                              </svg>
-                            </a>
-                          </li>
-                        </ul>
-                      </div>
                       <form onSubmit={onSubmit} className="comments__form">
                         <div className="sign__group">
                           <textarea
@@ -377,14 +324,17 @@ export default function MovieDetails() {
                             name="comment"
                             className="sign__textarea"
                             placeholder="Add comment"
+                            onClick={checkAuthenticatedComment}
                             value={values.comment}
                             onChange={onChange}
                             maxLength={500}
                           />
                         </div>
-                        <button type="submit" className="sign__btn">
-                          Send
-                        </button>
+                        {isAuthenticated && (
+                          <button type="submit" className="sign__btn">
+                            Send
+                          </button>
+                        )}
                       </form>
                     </div>
                     {/* end comments */}

@@ -27,7 +27,7 @@ const MoviesList = () => {
   const getMovieGenres = (movie) => {
     return genres.filter((genre) => movie.genre.includes(parseInt(genre.id)));
   };
-
+  console.error("RETURN");
   return (
     <div className="catalog catalog--page">
       <div className="container">

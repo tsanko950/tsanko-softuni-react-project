@@ -1,38 +1,60 @@
-import { createContext } from "react";
+import { createContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import * as firebaseServices from "../services/firebaseServices";
 import usePersistedState from "../hooks/usePersistedState";
 import Path from "../paths";
-
+import { getFirebaseAuthErrorMessage } from "../utils/firestoreErrors";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
   const [auth, setAuth] = usePersistedState("auth", {});
+  const [loginRegisterError, setLoginRegisterError] = useState();
 
   const loginSubmitHandler = async (values) => {
-    const result = await firebaseServices.loginUser(
-      values.email,
-      values.password
-    );
-    console.log(result);
-    setAuth(result);
-    localStorage.setItem("auth", JSON.stringify(result));
-    localStorage.setItem("accessToken", result.accessToken);
-    navigate(Path.Home);
+    setLoginRegisterError("");
+    try {
+      const result = await firebaseServices.loginUser(
+        values.email,
+        values.password
+      );
+      if (result.accessToken) {
+        setLoginRegisterError("");
+        setAuth(result);
+        localStorage.setItem("auth", JSON.stringify(result));
+        localStorage.setItem("accessToken", result.accessToken);
+        navigate(Path.Home);
+      } else {
+        // ERROR DE LOGIN
+        let errorLogin = getFirebaseAuthErrorMessage(result);
+        console.log(errorLogin);
+        setLoginRegisterError(errorLogin);
+      }
+    } catch (error) {
+      console.error(error);
+      setLoginRegisterError(getFirebaseAuthErrorMessage(error.code));
+    }
   };
 
   const registerSubmitHandler = async (values) => {
+    setLoginRegisterError("");
     const result = await firebaseServices.registerUser(
       values.email,
       values.password,
       values.username
     );
 
-    localStorage.setItem("accessToken", result.accessToken);
-    setAuth(result);
-    navigate(Path.Home);
+    if (result.accessToken) {
+      setLoginRegisterError("");
+      localStorage.setItem("accessToken", result.accessToken);
+      setAuth(result);
+      navigate(Path.Home);
+    } else {
+      let errorRegister = getFirebaseAuthErrorMessage(result);
+      console.log(result);
+      setLoginRegisterError(errorRegister);
+    }
   };
 
   const logoutHandler = () => {
@@ -45,6 +67,7 @@ export const AuthProvider = ({ children }) => {
     loginSubmitHandler,
     registerSubmitHandler,
     logoutHandler,
+    loginRegisterError,
     username: auth.username || auth.email,
     email: auth.email,
     userId: auth.uid,

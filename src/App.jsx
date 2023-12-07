@@ -12,6 +12,7 @@ import Login from "./components/Authentication/Login";
 import Register from "./components/Authentication/Register";
 import { AuthProvider } from "./contexts/autoContext";
 import Logout from "./components/Authentication/Logout";
+import Home from "./components/Home/Home";
 function App() {
   const [count, setCount] = useState(0);
   //serviceFirebase.actualizarPelicula(2, 2);
@@ -21,7 +22,7 @@ function App() {
         <Header />
 
         <Routes>
-          <Route path={Path.Home} element={<Carousel />}></Route>
+          <Route path={Path.Home} element={<Home />}></Route>
           <Route path={Path.Catalog} element={<Catalog />}></Route>
           <Route path={Path.MoviesList} element={<MoviesList />}></Route>
           <Route path={Path.MovieDetails} element={<MovieDetails />}></Route>

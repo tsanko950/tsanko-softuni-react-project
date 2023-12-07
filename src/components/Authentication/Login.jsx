@@ -11,7 +11,8 @@ const LoginFormKeys = {
 };
 
 export default function Login() {
-  const { loginSubmitHandler, isAuthenticated } = useContext(AuthContext);
+  const { loginSubmitHandler, isAuthenticated, loginRegisterError } =
+    useContext(AuthContext);
 
   const validate = {
     [LoginFormKeys.Email]: (value) => {
@@ -41,18 +42,25 @@ export default function Login() {
   if (isAuthenticated) {
     navigate(Path.Home);
   }
-
+  console.log(loginRegisterError);
   return (
-    <div className="sign section--full-bg" data-bg="img/bg.jpg">
+    <div
+      className="sign section--full-bg"
+      style={{ backgroundImage: "../src/img/bg.jpg" }}
+      data-bg="img/bg.jpg"
+    >
       <div className="container">
         <div className="row">
           <div className="col-12">
             <div className="sign__content">
               {/* authorization form */}
               <form id="login" onSubmit={onSubmit} className="sign__form">
-                <a href="index.html" className="sign__logo">
+                <a href="#" className="sign__logo">
                   <img src="src/assets/logo.png" alt="" />
                 </a>
+                {loginRegisterError && (
+                  <p className={styles.errorMessage}>{loginRegisterError}</p>
+                )}
                 <div className="sign__group">
                   <input
                     type="text"
