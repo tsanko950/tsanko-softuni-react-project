@@ -1,10 +1,37 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Path from "../../paths";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import AuthContext from "../../contexts/autoContext";
 
 export default function Header() {
-  const { isAuthenticated, username } = useContext(AuthContext);
+  const { isAuthenticated, username, searchMovie, setSearchMovie } =
+    useContext(AuthContext);
+
+  const navigate = useNavigate();
+
+  const handleMovieSearch = (e) => {
+    e.preventDefault();
+    const newSearchMovie = e.target["searchMovieValue"].value;
+    if (newSearchMovie) {
+      setSearchMovie(newSearchMovie);
+      navigate(Path.MoviesList + `?search=${newSearchMovie}`);
+    } else {
+      setSearchMovie("");
+      navigate(Path.MoviesList);
+    }
+  };
+
+  const onChangeHandleMovieSearch = (e) => {
+    e.preventDefault();
+    const newSearchMovie = e.target.value;
+    if (newSearchMovie) {
+      setSearchMovie(newSearchMovie);
+      navigate(Path.MoviesList + `?search=${newSearchMovie}`);
+    } else {
+      setSearchMovie("");
+      navigate(Path.MoviesList);
+    }
+  };
 
   return (
     <header className="header header--static">
@@ -48,93 +75,18 @@ export default function Header() {
                     Movies
                   </Link>
                 </li>
-
-                <li className="header__nav-item">
-                  <Link
-                    className="header__nav-link header__nav-link--more"
-                    to="#"
-                    role="button"
-                    id="dropdownMenu3"
-                    data-toggle="dropdown"
-                    aria-haspopup="true"
-                    aria-expanded="false"
-                  >
-                    <svg
-                      width={25}
-                      height={25}
-                      viewBox="0 0 25 25"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M6.93893 14.3033C6.08141 14.3033 5.38477 13.6067 5.38477 12.7505C5.38477 11.8943 6.08141 11.1963 6.93893 11.1963C7.79644 11.1963 8.49309 11.8943 8.49309 12.7505C8.49309 13.6067 7.79644 14.3033 6.93893 14.3033Z" />
-                      <path d="M12.7501 14.3033C11.8926 14.3033 11.1959 13.6067 11.1959 12.7505C11.1959 11.8943 11.8926 11.1963 12.7501 11.1963C13.6076 11.1963 14.3042 11.8943 14.3042 12.7505C14.3042 13.6067 13.6076 14.3033 12.7501 14.3033Z" />
-                      <path d="M18.5608 14.3033C17.7032 14.3033 17.0066 13.6067 17.0066 12.7505C17.0066 11.8943 17.7032 11.1963 18.5608 11.1963C19.4183 11.1963 20.1149 11.8943 20.1149 12.7505C20.1149 13.6067 19.4183 14.3033 18.5608 14.3033Z" />
-                    </svg>
-                  </Link>
-                  <ul
-                    className="dropdown-menu header__nav-menu header__nav-menu--scroll"
-                    aria-labelledby="dropdownMenu3"
-                    data-scrollbar="true"
-                    tabIndex={-1}
-                    style={{ overflow: "hidden", outline: "none" }}
-                  >
-                    <div className="scroll-content">
-                      <li>
-                        <Link to="about.html">About us</Link>
-                      </li>
-                      <li>
-                        <Link to="profile.html">Profile</Link>
-                      </li>
-                      <li>
-                        <Link to="contacts.html">Contacts</Link>
-                      </li>
-                      <li>
-                        <Link to="interview.html">Interview</Link>
-                      </li>
-                      <li>
-                        <Link to="../admin/index.html" target="_blank">
-                          Admin pages
-                        </Link>
-                      </li>
-                      <li>
-                        <Link to="privacy.html">Privacy policy</Link>
-                      </li>
-                      <li>
-                        <Link to="signin.html">Sign in</Link>
-                      </li>
-                      <li>
-                        <Link to="signup.html">Sign up</Link>
-                      </li>
-                      <li>
-                        <Link to="forgot.html">Forgot password</Link>
-                      </li>
-                      <li>
-                        <Link to="404.html">404 Page</Link>
-                      </li>
-                    </div>
-                    <div
-                      className="scrollbar-track scrollbar-track-x show"
-                      style={{ display: "none" }}
-                    >
-                      <div
-                        className="scrollbar-thumb scrollbar-thumb-x"
-                        style={{
-                          width: 200,
-                          transform: "translate3d(0px, 0px, 0px)",
-                        }}
-                      />
-                    </div>
-                  </ul>
-                </li>
               </ul>
               <div className="header__actions">
-                <form action="#" className="header__form">
+                <form onSubmit={handleMovieSearch} className="header__form">
                   <input
                     className="header__form-input"
                     type="text"
-                    placeholder="I'm looking for..."
+                    value={searchMovie}
+                    name="searchMovieValue"
+                    placeholder="Search movie..."
+                    onChange={onChangeHandleMovieSearch}
                   />
-                  <button className="header__form-btn" type="button">
+                  <button className="header__form-btn" type="submit">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                       <path d="M21.71,20.29,18,16.61A9,9,0,1,0,16.61,18l3.68,3.68a1,1,0,0,0,1.42,0A1,1,0,0,0,21.71,20.29ZM11,18a7,7,0,1,1,7-7A7,7,0,0,1,11,18Z" />
                     </svg>

@@ -1475,11 +1475,12 @@ body::-webkit-scrollbar-thumb {
   padding-top: 20px;
 }
 @media (min-width: 768px) {
+  
   .catalog {
     padding: 60px 0 80px;
   }
   .catalog--page {
-    padding-top: 30px;
+    padding-top: 80px;
   }
   .catalog__nav {
     padding: 20px 30px;
@@ -1535,6 +1536,9 @@ body::-webkit-scrollbar-thumb {
   .catalog__nav--relative {
     position: relative;
     top: auto;
+  }
+  .catalog--page {
+    padding-top: 30px;
   }
 }
 .row--grid {
@@ -2033,6 +2037,9 @@ body::-webkit-scrollbar-thumb {
   }
   .card__content {
     width: calc(100% - 160px);
+  }
+  .catalog--page {
+    padding-top: 80px;
   }
 }
 @media (min-width: 768px) {

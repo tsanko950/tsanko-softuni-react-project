@@ -11,6 +11,7 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
   const [auth, setAuth] = usePersistedState("auth", {});
   const [loginRegisterError, setLoginRegisterError] = useState();
+  const [searchMovie, setSearchMovie] = useState("");
 
   const loginSubmitHandler = async (values) => {
     setLoginRegisterError("");
@@ -67,7 +68,9 @@ export const AuthProvider = ({ children }) => {
     loginSubmitHandler,
     registerSubmitHandler,
     logoutHandler,
+    setSearchMovie,
     loginRegisterError,
+    searchMovie,
     username: auth.username || auth.email,
     email: auth.email,
     userId: auth.uid,

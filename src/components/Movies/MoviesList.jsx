@@ -1,11 +1,13 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import * as firebaseServices from "../../services/firebaseServices";
 import MovieListItem from "./MovieListItem";
+import AuthContext from "../../contexts/autoContext";
 
 const MoviesList = () => {
   const [movies, setMovies] = useState([]);
   const [genres, setGenres] = useState([]);
-
+  const { searchMovie } = useContext(AuthContext);
+  console.log(searchMovie);
   useEffect(() => {
     firebaseServices
       .getAllMovies()
@@ -24,10 +26,19 @@ const MoviesList = () => {
       });
   }, []);
 
+  useEffect(() => {
+    firebaseServices
+      .searchMovies(searchMovie)
+      .then((result) => setMovies(result))
+      .catch((error) => {
+        console.error("Error fetching movies:", error);
+      });
+  }, [searchMovie]);
+
   const getMovieGenres = (movie) => {
     return genres.filter((genre) => movie.genre.includes(parseInt(genre.id)));
   };
-  console.error("RETURN");
+
   return (
     <div className="catalog catalog--page">
       <div className="container">

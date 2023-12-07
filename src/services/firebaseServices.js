@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { collection, getFirestore, Timestamp, updateDoc, doc, deleteDoc, setDoc, getDoc, where, query, getDocs, addDoc } from "firebase/firestore";
+import { collection, getFirestore, Timestamp, updateDoc, doc, deleteDoc, setDoc, getDoc, where, query, startAt, endAt, orderBy, getDocs, addDoc } from "firebase/firestore";
 import { getAuth, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { getFunctions } from "firebase/functions";
 
@@ -57,6 +57,28 @@ const firebaseConfig = {
     } catch (error) {
       console.error('Error getting movie by ID:', error);
       throw error;
+    }
+  };
+
+
+  export const searchMovies = async (title) => {
+    try {
+      const moviesQuery = query(
+        collection(db, 'movies'),
+        orderBy('title'),
+        startAt(title),
+        endAt(title + '\uf8ff')
+      );
+  
+      const querySnapshot = await getDocs(moviesQuery);
+      const movies = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  
+      console.log(`Movies matching search term "${title}":`, movies);
+  
+      return movies;
+    } catch (error) {
+      console.error(`Error searching movies by title "${title}":`, error);
+      return [];
     }
   };
   
