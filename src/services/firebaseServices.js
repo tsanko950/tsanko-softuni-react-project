@@ -86,10 +86,14 @@ const firebaseConfig = {
       const moviesQuery = query(
         collection(db, 'movies'),
         orderBy('title'),
-        startAt(title),
-        endAt(title + '\uf8ff')
+        startAt(title.toLowerCase()),
+        endAt(title.toLowerCase() + '\uf8ff'),
+        startAt(title.toUpperCase()),
+        endAt(title.toUpperCase() + '\uf8ff'),
+        startAt(title.charAt(0).toUpperCase() + title.slice(1)),
+        endAt(title.charAt(0).toUpperCase() + title.slice(1) + '\uf8ff')
       );
-  
+
       const querySnapshot = await getDocs(moviesQuery);
       const movies = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
   

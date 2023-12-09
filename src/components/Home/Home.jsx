@@ -166,18 +166,18 @@ const Home = () => {
                   ></Select>
                 </div>
                 <div className="slider-radio" onChange={handleSortingChange}>
-                  <input type="radio" name="order" id="newest" />
+                  <input
+                    type="radio"
+                    name="order"
+                    id="newest"
+                    defaultChecked="checked"
+                  />
                   <label htmlFor="newest">Newest</label>
 
                   <input type="radio" name="order" id="duration" />
                   <label htmlFor="duration">Duration</label>
 
-                  <input
-                    type="radio"
-                    name="order"
-                    id="title"
-                    defaultChecked="checked"
-                  />
+                  <input type="radio" name="order" id="title" />
                   <label htmlFor="title">Title</label>
                 </div>
               </div>
