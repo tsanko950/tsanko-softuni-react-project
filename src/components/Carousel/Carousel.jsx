@@ -1,17 +1,16 @@
 import Slider from "react-slick";
+import styles from "./Carousel.module.css";
 
-import { useEffect, useState } from "react";
-import * as firebaseServices from "../../services/firebaseServices";
 import CarouselMovie from "./CarouselMovie";
 
 const Carousel = ({ movies, genres }) => {
   var settings = {
     dots: true,
-    infinite: true,
+    infinite: false,
     lazyLoad: true,
     speed: 500,
     slidesToShow: 4,
-    slidesToScroll: 1,
+    slidesToScroll: 4,
     swipeToSlide: true,
     dotsClass: "slick-dots slick-thumb",
   };
@@ -20,7 +19,7 @@ const Carousel = ({ movies, genres }) => {
   };
   return (
     <div className="home home--static">
-      <Slider {...settings}>
+      <Slider {...settings} className={styles["slick-list"]}>
         {movies.map((movie) => (
           <CarouselMovie
             key={movie.id}

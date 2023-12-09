@@ -5,6 +5,7 @@ const Path = {
     Catalog: '/catalog',
     Register: '/register',
     MoviesList: '/movies',
+    MoviesListGenre: '/movies/genre/:category?',
     MovieDetails: '/movies/:movieId',
     CreateEditMovie: '/add-movie/:movieId?',
 };

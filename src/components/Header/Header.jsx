@@ -45,7 +45,7 @@ export default function Header() {
                 <span />
               </button>
               <Link to={Path.Home} className="header__logo">
-                <img src="src/assets/logo.png" alt="TSANKO Softuni project" />
+                <img src="/src/img/logo.png" alt="TSANKO Softuni project" />
               </Link>
               <ul className="header__nav">
                 <li className="header__nav-item">
@@ -156,30 +156,7 @@ export default function Header() {
                           </Link>
                         </li>
                         <li>
-                          <Link to="profile.html">Profile</Link>
-                        </li>
-                        <li>
                           <Link to={Path.Logout}>Logout</Link>
-                        </li>
-                        <li>
-                          <Link to="interview.html">Interview</Link>
-                        </li>
-                        <li>
-                          <Link to="../admin/index.html" target="_blank">
-                            Admin pages
-                          </Link>
-                        </li>
-                        <li>
-                          <Link to="privacy.html">Privacy policy</Link>
-                        </li>
-                        <li>
-                          <Link to="signin.html">Sign in</Link>
-                        </li>
-                        <li>
-                          <Link to="signup.html">Sign up</Link>
-                        </li>
-                        <li>
-                          <Link to="forgot.html">Forgot password</Link>
                         </li>
                         <li></li>
                       </div>

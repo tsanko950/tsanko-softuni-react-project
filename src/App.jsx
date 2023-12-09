@@ -25,6 +25,10 @@ function App() {
           <Route path={Path.Home} element={<Home />}></Route>
           <Route path={Path.Catalog} element={<Catalog />}></Route>
           <Route path={Path.MoviesList} element={<MoviesList />}></Route>
+          <Route
+            path={`${Path.MoviesList}/genre/:category`}
+            element={<MoviesList />}
+          />
           <Route path={Path.MovieDetails} element={<MovieDetails />}></Route>
           <Route path={Path.Login} element={<Login />}></Route>
           <Route path={Path.Register} element={<Register />}></Route>

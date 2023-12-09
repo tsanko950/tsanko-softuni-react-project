@@ -19,7 +19,6 @@ export default function Login() {
       if (!value) {
         return "Email is required";
       }
-      // Puedes agregar una validación de formato de correo electrónico aquí si es necesario
       return "";
     },
     [LoginFormKeys.Password]: (value) => {
@@ -42,12 +41,12 @@ export default function Login() {
   if (isAuthenticated) {
     navigate(Path.Home);
   }
-  console.log(loginRegisterError);
+
   return (
     <div
       className="sign section--full-bg"
       style={{ backgroundImage: "../src/img/bg.jpg" }}
-      data-bg="img/bg.jpg"
+      data-bg="../src/img/bg.jpg"
     >
       <div className="container">
         <div className="row">
@@ -56,7 +55,7 @@ export default function Login() {
               {/* authorization form */}
               <form id="login" onSubmit={onSubmit} className="sign__form">
                 <a href="#" className="sign__logo">
-                  <img src="src/assets/logo.png" alt="" />
+                  <img src="src/img/logo.png" alt="" />
                 </a>
                 {loginRegisterError && (
                   <p className={styles.errorMessage}>{loginRegisterError}</p>

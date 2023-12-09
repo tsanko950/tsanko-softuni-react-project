@@ -25,7 +25,6 @@ export default function Register() {
       if (!value) {
         return "Email is required";
       }
-      // Puedes agregar una validación de formato de correo electrónico aquí si es necesario
       return "";
     },
     [RegisterFormKeys.Password]: (value) => {
@@ -59,7 +58,7 @@ export default function Register() {
               {/* registration form */}
               <form onSubmit={onSubmit} className="sign__form">
                 <a href="#" className="sign__logo">
-                  <img src="src/assets/logo.png" alt="" />
+                  <img src="src/img/logo.png" alt="" />
                 </a>
                 {loginRegisterError && (
                   <p className={styles.errorMessage}>{loginRegisterError}</p>

@@ -5,7 +5,7 @@ export default function Footer() {
         <div className="row">
           <div className="col-12 col-sm-8 col-md-6 col-lg-4 col-xl-3 order-4 order-md-1 order-lg-4 order-xl-1">
             <div className="footer__flixtv">
-              <img src="img/logo.svg" alt="" />
+              <img src="src/img/logo.png" alt="" style={{ width: "200px" }} />
             </div>
             <p className="footer__tagline">
               Movies &amp; TV Shows, Online cinema,
@@ -48,10 +48,7 @@ export default function Footer() {
                   />
                 </svg>
               </a>
-              <a
-                href="https://www.instagram.com/volkov_des1gn/"
-                target="_blank"
-              >
+              <a href="#" target="_blank">
                 <svg
                   width={30}
                   height={30}
@@ -153,10 +150,10 @@ export default function Footer() {
           <div className="col-6 col-md-4 col-lg-3 col-xl-2 order-1 order-md-2 order-lg-1 order-xl-2 offset-md-2 offset-lg-0 offset-xl-1">
             <h6 className="footer__title">FlixTV</h6>
             <div className="footer__nav">
-              <a href="about.html">About us</a>
-              <a href="profile.html">My profile</a>
-              <a href="pricing.html">Pricing plans</a>
-              <a href="contacts.html">Contacts</a>
+              <a href="#">About us</a>
+              <a href="#">My profile</a>
+              <a href="#">Pricing plans</a>
+              <a href="#">Contacts</a>
             </div>
           </div>
           <div className="col-12 col-md-8 col-lg-6 col-xl-4 order-3 order-lg-2 order-md-3 order-xl-3">
@@ -166,18 +163,18 @@ export default function Footer() {
               </div>
               <div className="col-6">
                 <div className="footer__nav">
-                  <a href="live.html">Live TV</a>
-                  <a href="live.html">Live News</a>
-                  <a href="live.html">Live Sports</a>
-                  <a href="live.html">Streaming Library</a>
+                  <a href="#">Live TV</a>
+                  <a href="#">Live News</a>
+                  <a href="#">Live Sports</a>
+                  <a href="#">Streaming Library</a>
                 </div>
               </div>
               <div className="col-6">
                 <div className="footer__nav">
-                  <a href="category.html">TV Shows</a>
-                  <a href="category.html">Movies</a>
-                  <a href="category.html">Kids</a>
-                  <a href="category.html">Collections</a>
+                  <a href="#">TV Shows</a>
+                  <a href="#">Movies</a>
+                  <a href="#">Kids</a>
+                  <a href="#">Collections</a>
                 </div>
               </div>
             </div>
@@ -185,10 +182,10 @@ export default function Footer() {
           <div className="col-6 col-md-4 col-lg-3 col-xl-2 order-2 order-lg-3 order-md-4 order-xl-4">
             <h6 className="footer__title">Help</h6>
             <div className="footer__nav">
-              <a href="privacy.html">Account &amp; Billing</a>
-              <a href="privacy.html">Plans &amp; Pricing</a>
-              <a href="privacy.html">Supported devices</a>
-              <a href="privacy.html">Accessibility</a>
+              <a href="#">Account &amp; Billing</a>
+              <a href="#">Plans &amp; Pricing</a>
+              <a href="#">Supported devices</a>
+              <a href="#">Accessibility</a>
             </div>
           </div>
         </div>
@@ -196,15 +193,12 @@ export default function Footer() {
           <div className="col-12">
             <div className="footer__content">
               <div className="footer__links">
-                <a href="privacy.html">Privacy policy</a>
-                <a href="privacy.html">Terms and conditions</a>
+                <a href="#">Privacy policy</a>
+                <a href="#">Terms and conditions</a>
               </div>
               <small className="footer__copyright">
-                © CINEMA SoftUni Project by 2023. Created by{" "}
-                <a
-                  href="https://themeforest.net/user/dmitryvolkov/portfolio"
-                  target="_blank"
-                >
+                © CINEMA SoftUni Project 2023. Created by{" "}
+                <a href="#" target="_blank">
                   Tsanko
                 </a>
                 .

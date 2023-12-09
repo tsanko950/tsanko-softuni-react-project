@@ -39,7 +39,6 @@ export default function Comment({ movieID, comment, dispatch, onEdit }) {
   return (
     <li className="comments__item">
       <div className="comments__autor">
-        <img className="comments__avatar" src="img/avatar.svg" alt="" />
         <span className="comments__name">{comment.creatorUsername}</span>
         <span className="comments__time">
           {getDateTime(comment.datetime.seconds)}
@@ -47,65 +46,6 @@ export default function Comment({ movieID, comment, dispatch, onEdit }) {
       </div>
       <p className="comments__text">{comment.comment}</p>
       <div className="comments__actions">
-        <div className="comments__rate">
-          <button type="button">
-            <svg
-              width={22}
-              height={22}
-              viewBox="0 0 22 22"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M11 7.3273V14.6537"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M14.6667 10.9905H7.33333"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                fillRule="evenodd"
-                clipRule="evenodd"
-                d="M15.6857 1H6.31429C3.04762 1 1 3.31208 1 6.58516V15.4148C1 18.6879 3.0381 21 6.31429 21H15.6857C18.9619 21 21 18.6879 21 15.4148V6.58516C21 3.31208 18.9619 1 15.6857 1Z"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>{" "}
-            {comment.negativeVotes}
-          </button>
-          <button type="button">
-            {comment.positiveVotes}{" "}
-            <svg
-              width={22}
-              height={22}
-              viewBox="0 0 22 22"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M14.6667 10.9905H7.33333"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                fillRule="evenodd"
-                clipRule="evenodd"
-                d="M15.6857 1H6.31429C3.04762 1 1 3.31208 1 6.58516V15.4148C1 18.6879 3.0381 21 6.31429 21H15.6857C18.9619 21 21 18.6879 21 15.4148V6.58516C21 3.31208 18.9619 1 15.6857 1Z"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
-        </div>
-
         {userId == comment.creator ? (
           <>
             <button type="button" onClick={onEdit}>

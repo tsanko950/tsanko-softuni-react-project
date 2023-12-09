@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
 import Path from "../../paths";
+import { getDuration } from "../../utils/utils";
 
-export default function HomeMovie({ movie, genres }) {
+export default function HomeMovie({ movie, genres, userId }) {
   return (
     <div className="col-12 col-md-6 col-xl-4">
       <div className="card card--big">
@@ -33,17 +34,17 @@ export default function HomeMovie({ movie, genres }) {
             />
           </svg>
         </Link>
-        <button className="card__add" type="button">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <path d="M16,2H8A3,3,0,0,0,5,5V21a1,1,0,0,0,.5.87,1,1,0,0,0,1,0L12,18.69l5.5,3.18A1,1,0,0,0,18,22a1,1,0,0,0,.5-.13A1,1,0,0,0,19,21V5A3,3,0,0,0,16,2Zm1,17.27-4.5-2.6a1,1,0,0,0-1,0L7,19.27V5A1,1,0,0,1,8,4h8a1,1,0,0,1,1,1Z" />
-          </svg>
-        </button>
-        <span className="card__rating">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <path d="M22,9.67A1,1,0,0,0,21.14,9l-5.69-.83L12.9,3a1,1,0,0,0-1.8,0L8.55,8.16,2.86,9a1,1,0,0,0-.81.68,1,1,0,0,0,.25,1l4.13,4-1,5.68A1,1,0,0,0,6.9,21.44L12,18.77l5.1,2.67a.93.93,0,0,0,.46.12,1,1,0,0,0,.59-.19,1,1,0,0,0,.4-1l-1-5.68,4.13-4A1,1,0,0,0,22,9.67Zm-6.15,4a1,1,0,0,0-.29.88l.72,4.2-3.76-2a1.06,1.06,0,0,0-.94,0l-3.76,2,.72-4.2a1,1,0,0,0-.29-.88l-3-3,4.21-.61a1,1,0,0,0,.76-.55L12,5.7l1.88,3.82a1,1,0,0,0,.76.55l4.21.61Z" />
-          </svg>{" "}
-          9.1
-        </span>
+        {movie.creator == userId && (
+          <Link
+            to={`${Path.CreateEditMovie.replace(":movieId", movie.id)}`}
+            className="card__add"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18">
+              <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
+            </svg>
+          </Link>
+        )}
+
         <div className="card__content">
           <h3 className="card__title">
             <Link to={`${Path.MovieDetails.replace(":movieId", movie.id)}`}>
@@ -54,19 +55,29 @@ export default function HomeMovie({ movie, genres }) {
           </h3>
           <ul className="card__list">
             {genres.map((genre) => (
-              <li key={genre.id}>{genre.description}</li>
+              <li key={genre.id} className="hover-effect">
+                {genre.description}
+              </li>
             ))}
           </ul>
           <ul className="card__info">
             <li>
               <span>Director:</span>
-              <span>
-                <a href="#">{movie.director}</a>
+              <span className="hover-effect">{movie.director}</span>
+            </li>
+          </ul>
+          <ul className="card__info">
+            <li>
+              <span>Duration:</span>
+              <span className="hover-effect">
+                {getDuration(movie.duration)}
               </span>
             </li>
           </ul>
           <p className="card__tagline">
-            {movie.plot.substring(0, 150) + "..."}
+            {movie.plot.length > 150
+              ? movie.plot.substring(0, 150) + "..."
+              : movie.plot}
           </p>
         </div>
       </div>

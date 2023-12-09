@@ -20,7 +20,6 @@ const firebaseConfig = {
   export const addMovie = async (movieData) => {
     try {
       const docRef = await addDoc(collection(db, 'movies'), movieData);
-      console.log('Movie added successfully with ID:', docRef.id);
       return docRef;
     } catch (error) {
       console.error('Error adding movie:', error);
@@ -33,11 +32,32 @@ const firebaseConfig = {
       const querySnapshot = await getDocs(collection(db, 'movies'));
       const movies = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
       
-      console.log('All movies:', movies);
-      
       return movies;
     } catch (error) {
       console.error('Error getting movies:', error);
+      return [];
+    }
+  };
+
+  export const getMoviesByGenre = async (genres) => {
+    try {
+      const moviesQuery = query(collection(db, 'movies'), where('genre', 'array-contains-any', genres));
+      const querySnapshot = await getDocs(moviesQuery);
+      const movies = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+
+      const similarMovies = [];
+      const addedMovieIds = new Set();
+      movies.forEach((movie) => {
+        if (!addedMovieIds.has(movie.id)) {
+          similarMovies.push(movie);
+          addedMovieIds.add(movie.id);
+        }
+      });
+
+      
+      return similarMovies;
+    } catch (error) {
+      console.error('Error getting movies by genre:', error);
       return [];
     }
   };
@@ -73,8 +93,6 @@ const firebaseConfig = {
       const querySnapshot = await getDocs(moviesQuery);
       const movies = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
   
-      console.log(`Movies matching search term "${title}":`, movies);
-  
       return movies;
     } catch (error) {
       console.error(`Error searching movies by title "${title}":`, error);
@@ -86,7 +104,6 @@ const firebaseConfig = {
   export const updateMovie = async (id, newMovieData) => {
     try {
       await updateDoc(doc(db, "movies", id), newMovieData);
-      console.log('Película actualizada con éxito');
     } catch (error) {
       console.error('Error updating movie:', error);
     }
@@ -95,10 +112,10 @@ const firebaseConfig = {
   
   export const removeMovie = async (id) => {
     try {
-      await db.collection('movies').doc(id).delete();
-      console.log('Movie deleted succesfuly');
+      const r = await deleteDoc(doc(db, "movies", id));
+      return true;
     } catch (error) {
-      console.error('Error deleting movies:', error);
+      return false;
     }
   };
   
@@ -123,10 +140,8 @@ const firebaseConfig = {
     try {
       const auth = getAuth();
       
-      // Crear el usuario con email y contraseña
       const userCredential = await createUserWithEmailAndPassword(auth, email.trim(), password);
   
-      // Obtener el ID del usuario registrado
       const userId = userCredential.user.uid;
   
       const result = await setDoc(doc(db, "users", userId), {
@@ -143,7 +158,6 @@ const firebaseConfig = {
       objResult.username = username;
       objResult.isAdmin = false;
       objResult.uid = userId;
-      console.log(objResult);
       return objResult;
     } catch (error) {
       return error.code;
@@ -154,7 +168,6 @@ const firebaseConfig = {
     try {
       const auth = getAuth();
   
-      // Iniciar sesión con email y contraseña
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       var objResult = {};
       objResult.accessToken = userCredential.user.accessToken;
@@ -249,7 +262,6 @@ const firebaseConfig = {
  // EDIT COMMENT
   export const updateComment = async (id, newCommentData) => {
     try {
-      console.log(id);
       await updateDoc(doc(db, "comments", id), {
         comment: newCommentData
       });

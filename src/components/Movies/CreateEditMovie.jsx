@@ -31,7 +31,6 @@ const CreateEditMovie = ({ onEdit }) => {
     if (!isAuthenticated) {
       navigate(Path.Home);
     }
-    //firebaseServices.getMovieByID(movieId).then((result) => setMovie(result));
   }, [movieId]);
 
   useEffect(() => {
@@ -52,8 +51,14 @@ const CreateEditMovie = ({ onEdit }) => {
         .getMovieById(movieId)
         .then((movieData) => {
           if (movieData) {
-            setMovieValues(movieData);
+            // If creator is not some as authenticated user redirect to movies list
+            if (movieData.creator != userId) {
+              navigate(Path.Home);
+            } else {
+              setMovieValues(movieData);
+            }
           } else {
+            navigate(Path.Home);
           }
         })
         .catch((error) => {
@@ -65,7 +70,6 @@ const CreateEditMovie = ({ onEdit }) => {
   const changeHandler = (e) => {
     const { name, value, type, checked } = e.target;
 
-    // Limpiar el error asociado al campo
     setErrors((state) => ({
       ...state,
       [name]: "",
@@ -85,7 +89,6 @@ const CreateEditMovie = ({ onEdit }) => {
               ? state.genre.filter((id) => id !== genreId)
               : [...state.genre, genreId];
 
-            // Actualizar la validación de géneros después de modificar state.genre
             genreValidator(updatedGenre);
 
             return {
@@ -108,11 +111,6 @@ const CreateEditMovie = ({ onEdit }) => {
       ...state,
       [name]: newValue,
     }));
-    console.log(movieValues);
-  };
-
-  const resetFormHandler = () => {
-    // setMovieValues(movieInitialState);
   };
 
   const validateField = (fieldName, fieldValue) => {
@@ -150,7 +148,7 @@ const CreateEditMovie = ({ onEdit }) => {
           }));
         }
         break;
-      // Agregar más casos para otros campos si es necesario
+
       case "title":
       case "cast":
       case "director":
@@ -172,17 +170,14 @@ const CreateEditMovie = ({ onEdit }) => {
         }
         break;
       default:
-      // Hacer algo en caso de que el campo no esté manejado
     }
   };
 
   const submitHandler = (e) => {
     e.preventDefault();
 
-    // Validar todos los campos
     const validationErrors = {};
 
-    // Validar campos obligatorios y otros campos específicos
     for (const key in movieValues) {
       if (movieValues.hasOwnProperty(key)) {
         validateField(key, movieValues[key]);
@@ -190,13 +185,10 @@ const CreateEditMovie = ({ onEdit }) => {
     }
 
     genreValidator();
-    console.log(errors);
-    // Verificar si hay errores de validación
     if (
       Object.values(errors).some((error) => error !== "") ||
       Object.keys(errors).length === 0
     ) {
-      console.log("Formulario no válido:", errors);
       return;
     }
 
@@ -209,10 +201,7 @@ const CreateEditMovie = ({ onEdit }) => {
       }
 
       navigate(Path.MoviesList);
-    } catch (err) {
-      // Error notification
-      console.log(err);
-    }
+    } catch (err) {}
     // resetFormHandler();
   };
 
@@ -317,7 +306,6 @@ const CreateEditMovie = ({ onEdit }) => {
                           placeholder="The Godfather"
                           value={movieValues.title}
                           onChange={changeHandler}
-                          onBlur={() => console.log("onBlur")}
                         />
                         {errors.title && (
                           <p className={styles.errorMessage}>{errors.title}</p>

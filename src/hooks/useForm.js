@@ -17,7 +17,6 @@ export default function useForm(submitHandler, initialValues, validationRules) {
         [e.target.name]: e.target.value
       }));
 
-      // Limpiar el error asociado al campo
       setErrors((prevErrors) => ({
         ...prevErrors,
         [name]: "",
@@ -38,7 +37,7 @@ export default function useForm(submitHandler, initialValues, validationRules) {
   
     const onSubmit = (e) => {
       e.preventDefault();
-      // Validar todos los campos antes de enviar
+      
       for (const key in validationRules) {
         if (validationRules.hasOwnProperty(key)) {
           validateField(key, values[key]);
@@ -49,6 +48,10 @@ export default function useForm(submitHandler, initialValues, validationRules) {
       }
       submitHandler(values);
     };
+
+    const setEditCommentValue = (newValue) => {
+        setValues(newValue);
+    };
   
     return {
       values,
@@ -56,6 +59,7 @@ export default function useForm(submitHandler, initialValues, validationRules) {
       onChange,
       onSubmit,
       resetForm,
+      setEditCommentValue
     };
   }
   

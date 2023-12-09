@@ -1,5 +1,5 @@
-import { createContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { createContext, useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import * as firebaseServices from "../services/firebaseServices";
 import usePersistedState from "../hooks/usePersistedState";
@@ -12,6 +12,14 @@ export const AuthProvider = ({ children }) => {
   const [auth, setAuth] = usePersistedState("auth", {});
   const [loginRegisterError, setLoginRegisterError] = useState();
   const [searchMovie, setSearchMovie] = useState("");
+
+  const location = useLocation();
+
+  useEffect(() => {
+    if (!location.search) {
+      setSearchMovie("");
+    }
+  }, [location]);
 
   const loginSubmitHandler = async (values) => {
     setLoginRegisterError("");
@@ -27,9 +35,8 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem("accessToken", result.accessToken);
         navigate(Path.Home);
       } else {
-        // ERROR DE LOGIN
+        // ERROR LOGIN
         let errorLogin = getFirebaseAuthErrorMessage(result);
-        console.log(errorLogin);
         setLoginRegisterError(errorLogin);
       }
     } catch (error) {
@@ -53,7 +60,7 @@ export const AuthProvider = ({ children }) => {
       navigate(Path.Home);
     } else {
       let errorRegister = getFirebaseAuthErrorMessage(result);
-      console.log(result);
+
       setLoginRegisterError(errorRegister);
     }
   };
@@ -63,7 +70,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("auth");
   };
-  // console.log(auth.stsTokenManager.accessToken);
+
   const values = {
     loginSubmitHandler,
     registerSubmitHandler,
@@ -84,5 +91,3 @@ export const AuthProvider = ({ children }) => {
 AuthContext.displayName = "AuthContext";
 
 export default AuthContext;
-// https://t.me/ReactJS23SoftUni
-// https://t.me/+VN2i12PAynpiNDBk
