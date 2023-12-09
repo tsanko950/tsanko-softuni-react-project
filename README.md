@@ -49,25 +49,25 @@ Getting Started
 
     Clone the repository:
 
-    bash
+    
 
 git clone https://github.com/tsanko950/tsanko-softuni-react-project.git
 
 Navigate to the project directory:
 
-bash
+
 
 cd tsanko-softuni-react-project
 
 Install dependencies:
 
-bash
+
 
 npm install
 
 Start the development server:
 
-bash
+
 
     npm start
 
